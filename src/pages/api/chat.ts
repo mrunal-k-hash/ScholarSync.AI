@@ -50,7 +50,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
-          "HTTP-Referer": "http://localhost:4321",
+          "HTTP-Referer": new URL(request.url).origin,
           "X-Title": "ScholarSync AI"
         },
         body: JSON.stringify({
