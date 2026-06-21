@@ -165,6 +165,13 @@ import PrimerGrid from '../components/PrimerGrid.astro';
 
   <script>
     import { supabase, getSessionId } from '../utils/supabase';
+    import {
+      isTracked,
+      trackScholarship,
+      untrackScholarship,
+      syncTrackedFromSupabase,
+      checkDeadlineNotifications,
+    } from '../utils/notifications';
 
     // Protect route
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -340,8 +347,12 @@ import PrimerGrid from '../components/PrimerGrid.astro';
             </div>
 
             <div class="flex items-center gap-3 border-t border-gray-100 pt-4 justify-end">
-              <button onclick="trackApp('${sch.id}', '${sch.name.replace(/'/g, "\\'")}')" class="px-4 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-[10px] font-bold text-gray-700 transition-colors shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-black">
-                Track Application
+              <button
+                id="track-btn-${sch.id}"
+                onclick="trackApp('${sch.id}', '${sch.name.replace(/'/g, "\\'")}')"
+                class="px-4 py-2 rounded-xl border text-[10px] font-bold transition-all shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-black ${isTracked(sch.id) ? 'bg-black text-white border-black hover:bg-gray-800' : 'border-gray-200 hover:bg-gray-50 text-gray-700'}"
+              >
+                ${isTracked(sch.id) ? '<span class="inline-flex items-center gap-1"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Tracking</span>' : 'Track Application'}
               </button>
               <a href="${sch.officialLink}" target="_blank" class="px-4 py-2 rounded-xl bg-black text-white text-[10px] font-bold hover:bg-gray-800 transition-colors shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-black">
                 Apply Official
@@ -420,13 +431,42 @@ import PrimerGrid from '../components/PrimerGrid.astro';
       }).join('');
     }
 
-    // Tracker logic
+    // Tracker logic — now with push notification integration
     async function trackApp(id, name) {
+      const btn = document.getElementById(`track-btn-${id}`);
       const panel = document.getElementById('trackerContent');
       const empty = document.getElementById('trackerEmpty');
       const titleEl = document.getElementById('trackedSchName');
       const sessionId = await getSessionId();
-      
+
+      // Toggle tracking state
+      if (isTracked(id)) {
+        // Untrack
+        await untrackScholarship(id);
+        if (btn) {
+          btn.classList.remove('bg-black', 'text-white', 'border-black', 'hover:bg-gray-800');
+          btn.classList.add('border-gray-200', 'hover:bg-gray-50', 'text-gray-700');
+          btn.innerHTML = 'Track Application';
+        }
+        // Hide tracker panel if this was the displayed one
+        if (titleEl && titleEl.textContent === name) {
+          panel?.classList.add('hidden');
+          empty?.classList.remove('hidden');
+        }
+        return;
+      }
+
+      // Track the scholarship & send notification
+      await trackScholarship(id);
+
+      // Update button visual state
+      if (btn) {
+        btn.classList.add('bg-black', 'text-white', 'border-black', 'hover:bg-gray-800');
+        btn.classList.remove('border-gray-200', 'hover:bg-gray-50', 'text-gray-700');
+        btn.innerHTML = '<span class="inline-flex items-center gap-1"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Tracking</span>';
+      }
+
+      // Show tracker steps panel
       empty?.classList.add('hidden');
       panel?.classList.remove('hidden');
       if (titleEl) titleEl.textContent = name;
@@ -462,6 +502,9 @@ import PrimerGrid from '../components/PrimerGrid.astro';
           };
         }
       });
+
+      // Update notification badge in Layout
+      window.dispatchEvent(new CustomEvent('notifications-updated'));
     }
     (window as any).trackApp = trackApp;
 
@@ -554,6 +597,15 @@ import PrimerGrid from '../components/PrimerGrid.astro';
     // Filter listeners
     schSearchInput.addEventListener('input', () => renderMatches(matchedScholarships));
     document.getElementById('typeFilter').addEventListener('change', () => renderMatches(matchedScholarships));
+
+    // Sync tracked scholarships from Supabase & run deadline checks
+    syncTrackedFromSupabase().then(() => {
+      checkDeadlineNotifications().then((newCount) => {
+        if (newCount > 0) {
+          window.dispatchEvent(new CustomEvent('notifications-updated'));
+        }
+      });
+    });
 
   </script>
 </Layout>
