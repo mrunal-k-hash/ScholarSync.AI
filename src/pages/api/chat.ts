@@ -2,6 +2,12 @@ import type { APIRoute } from 'astro';
 import { SCHOLARSHIPS } from '../../utils/scholarshipsDb';
 import { supabase } from '../../utils/supabase';
 import { checkRateLimit } from '../../utils/rateLimit';
+import {
+  fetchWithFallback,
+  truncateHistory,
+  getApiKey,
+  MAX_TOKENS,
+} from '../../utils/openrouterConfig';
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
@@ -40,61 +46,56 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const { messages, profile } = body;
     const lastMessage = messages[messages.length - 1]?.content || "";
 
-    // 4. Secure API Key Access (Never hardcoded)
-    const apiKey = import.meta.env.OPENROUTER_API_KEY || (globalThis as any).process?.env?.OPENROUTER_API_KEY;
+    // 4. Validate API Key (server-side only, never exposed to client)
+    let hasApiKey = false;
+    try {
+      getApiKey();
+      hasApiKey = true;
+    } catch {
+      console.warn("[Chat] OPENROUTER_API_KEY not set — falling back to local engine.");
+    }
 
-    if (apiKey) {
-      // Direct OpenRouter API Integration
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
-          "HTTP-Referer": new URL(request.url).origin,
-          "X-Title": "ScholarSync AI"
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          response_format: { type: "json_object" },
-          max_tokens: 4000,
+    if (hasApiKey) {
+      // ── OpenRouter API with free model fallback chain ──
+      // Truncate history to optimize token usage
+      const truncatedMessages = truncateHistory(messages);
+
+      // Build a concise scholarship summary instead of full JSON dump
+      const scholarshipSummary = SCHOLARSHIPS.slice(0, 30).map(s => 
+        `${s.name} (${s.type}) — ${s.benefitAmount}, Deadline: ${s.deadline}`
+      ).join('\n');
+
+      // Compact system prompt to reduce token usage
+      const systemPrompt = `You are ScholarSync AI, helping Indian students find scholarships and government schemes.
+
+Available scholarships (condensed):
+${scholarshipSummary}
+
+Student profile: ${profile ? JSON.stringify(profile) : 'Not created yet.'}
+
+RULES:
+- Return JSON with exactly two fields: "response" and "profile_updates"
+- "response": markdown-formatted answer (under 200 words, concise, encouraging)
+- "profile_updates": object with extracted profile details from the student's current message only
+  - state → "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "Gujarat", "West Bengal", "Rajasthan"
+  - category → "General", "OBC", "SC", "ST"
+  - educationLevel → "School", "Diploma", "Undergraduate", "Postgraduate", "PhD"
+  - percentageOrCgpa → number (0-100 or 0-10)
+  - disabilityStatus, minorityStatus → booleans
+  - Only include fields explicitly provided. Omit unknown fields.`;
+
+      try {
+        const origin = new URL(request.url).origin;
+        const result = await fetchWithFallback(origin, {
           messages: [
-            {
-              role: "system",
-              content: `You are ScholarSync AI, a highly intelligent AI agent helping students find financial aid, scholarships, and government schemes in India.
-              You have access to the following local scholarship database: ${JSON.stringify(SCHOLARSHIPS)}.
-              
-              Current Student Profile Context:
-              ${profile ? JSON.stringify(profile) : 'No profile created yet.'}
-              
-              Your task is to analyze the conversation and the student's details (such as name, caste category, income, marks, state, disability, course, etc.) and match them with the database.
-              
-              IMPORTANT: You MUST return a JSON object with exactly two fields:
-              1. "response": your markdown-formatted message answering the student's query, showing matched scholarships, calculating their eligibility, or asking for missing details. Keep the response under 250 words, clean, concise and encouraging.
-              2. "profile_updates": an object containing any profile details extracted from the student's current message (e.g. name, age, gender, state, category, familyIncome, educationLevel, currentCourse, percentageOrCgpa, disabilityStatus, minorityStatus).
-                 - Map state to: "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Uttar Pradesh", "Gujarat", "West Bengal", or "Rajasthan".
-                 - Map category to: "General", "OBC", "SC", "ST".
-                 - Map educationLevel to: "School", "Diploma", "Undergraduate", "Postgraduate", "PhD".
-                 - Map percentageOrCgpa to a number (0-100 scale or 0-10 scale).
-                 - Map disabilityStatus and minorityStatus to booleans.
-                 - Only include fields that the student explicitly provided in their messages. Keep other fields undefined or omitted. Do not overwrite fields with null unless the user clears them.
-              
-              Example JSON output:
-              {
-                "response": "### Match Found!\\\\n\\\\nBased on your OBC category and income, you are eligible for...",
-                "profile_updates": {
-                  "category": "OBC",
-                  "familyIncome": 150000
-                }
-              }`
-            },
-            ...messages
-          ]
-        })
-      });
+            { role: "system", content: systemPrompt },
+            ...truncatedMessages,
+          ],
+          max_tokens: MAX_TOKENS,
+          response_format: { type: "json_object" },
+        });
 
-      if (response.ok) {
-        const json = await response.json();
-        const text = json.choices?.[0]?.message?.content;
+        const text = result.data.choices?.[0]?.message?.content;
         if (text) {
           try {
             const parsed = JSON.parse(text);
@@ -105,7 +106,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
               status: 200,
               headers: { 'Content-Type': 'application/json' }
             });
-          } catch (e) {
+          } catch {
             // Fallback if the LLM output is not valid JSON
             return new Response(JSON.stringify({ response: text }), {
               status: 200,
@@ -113,13 +114,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
             });
           }
         }
-      } else {
-        const errText = await response.text();
-        console.error("OpenRouter API Error:", response.status, errText);
+      } catch (aiError: any) {
+        console.error("[Chat] All free models failed:", aiError.message);
+        // Fall through to the local keyword engine below
       }
     }
 
-    // High-Fidelity Local Mock / Keyword Fallback Engine
+    // ── High-Fidelity Local Mock / Keyword Fallback Engine ──
     const query = lastMessage.toLowerCase();
     let responseText = "";
     const fallbackProfileUpdates: any = {};
