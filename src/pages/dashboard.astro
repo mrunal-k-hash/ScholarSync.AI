@@ -1,0 +1,559 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { 
+  Bookmark, 
+  Calendar, 
+  Clock, 
+  Search, 
+  Sparkles, 
+  UserCheck, 
+  FileText, 
+  ChevronRight,
+  Plus,
+  Play,
+  Volume2,
+  Sliders,
+  CheckCircle,
+  Briefcase,
+  FileSpreadsheet
+} from '@lucide/astro';
+import PrimerGrid from '../components/PrimerGrid.astro';
+---
+
+<Layout title="Dashboard | ScholarSync AI" activePage="dashboard">
+  <!-- Profile Banner -->
+  <div class="bg-white p-6 md:p-8 rounded-3xl border border-gray-200 shadow-sm mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+    <!-- Decorative Background Grid -->
+    <PrimerGrid 
+      cols={6} 
+      rows={4} 
+      cellSize={20}
+      cells={[
+        { row: 0, col: 5, color: 'bg-[#FFD13B]' },
+        { row: 2, col: 4, color: 'bg-[#3B82F6]' },
+        { row: 3, col: 5, color: 'bg-[#FF6B2B]' }
+      ]}
+      className="absolute -right-4 -bottom-4 hidden sm:grid opacity-30"
+    />
+    <div class="space-y-2 relative z-10">
+      <div class="flex items-center gap-2">
+        <h1 class="font-outfit text-2xl md:text-3xl font-black text-gray-900" id="welcomeUser">Welcome back, Student!</h1>
+        <span class="px-2 py-0.5 rounded bg-green-100 text-green-800 text-[9px] font-bold border border-green-200 flex items-center gap-1">
+          <UserCheck class="w-3 h-3" /> Profile Active
+        </span>
+      </div>
+      <p class="text-xs text-gray-500 font-medium" id="welcomeSub">Academic Level: Undergraduate • Category: OBC</p>
+    </div>
+    
+    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+      <a href="/profile" class="flex-grow sm:flex-grow-0 px-4 py-2.5 rounded-xl bg-black hover:bg-gray-800 text-white text-xs font-bold outline-none focus-visible:ring-2 focus-visible:ring-black transition-colors text-center shadow-sm">
+        Edit Profile
+      </a>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+    <!-- Left 2 Cols: Main matches, search, voice search -->
+    <div class="lg:col-span-2 space-y-6">
+      
+      <!-- Search & Filter Controls -->
+      <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+        <div class="relative flex-grow w-full">
+          <Search class="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400" aria-hidden="true" />
+          <input type="text" id="schSearch" name="searchQuery" aria-label="Search scholarships" autocomplete="off" placeholder="Search by name, sponsor, or keyword…" class="w-full pl-10 pr-4 py-3 text-xs rounded-xl bg-gray-50 border border-gray-200 text-gray-900 outline-none focus-visible:ring-2 focus-visible:ring-black transition-colors" />
+        </div>
+        
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <button id="voiceSearchBtn" type="button" class="p-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 outline-none focus-visible:ring-2 focus-visible:ring-black transition-colors text-gray-500 hover:text-black relative shadow-sm" title="Voice Search" aria-label="Voice Search">
+            <Volume2 class="w-4.5 h-4.5" aria-hidden="true" />
+            <span id="voiceRipple" class="hidden absolute inset-0 rounded-xl bg-gray-200 animate-ping"></span>
+          </button>
+          <select id="typeFilter" name="scholarshipType" aria-label="Filter by scholarship type" class="px-3.5 py-3 text-xs rounded-xl bg-gray-50 border border-gray-200 text-gray-900 min-w-36 outline-none focus-visible:ring-2 focus-visible:ring-black transition-colors">
+            <option value="All">All Types</option>
+            <option value="Government">Government</option>
+            <option value="Private">Private</option>
+            <option value="Merit-Based">Merit-Based</option>
+            <option value="Need-Based">Need-Based</option>
+            <option value="International">International</option>
+            <option value="State-Specific">State-Specific</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Recommended List -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center px-1">
+          <h2 class="font-outfit text-lg font-bold text-gray-900">Recommended Scholarships</h2>
+          <span class="text-xs text-gray-500 font-semibold" id="recsSummary">Scanning...</span>
+        </div>
+        
+        <div class="space-y-4" id="recsContainer">
+          <!-- Dynamically Rendered matching list -->
+          <div class="text-center py-20 text-gray-500 text-xs font-medium">
+            Loading your matched recommendations...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right 1 Col: Deadlines, saved list, application tracker -->
+    <div class="space-y-6">
+      
+      <!-- Saved List -->
+      <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
+        <h3 class="font-outfit font-bold text-sm text-gray-900 mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
+          <Bookmark class="w-4.5 h-4.5 text-gray-400" />
+          Saved Scholarships
+        </h3>
+        <div class="space-y-3 max-h-60 overflow-y-auto" id="savedContainer">
+          <div class="text-center py-8 text-gray-500 text-xs font-medium">
+            No saved scholarships yet. Bookmark them to track.
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Deadlines -->
+      <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
+        <h3 class="font-outfit font-bold text-sm text-gray-900 mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
+          <Calendar class="w-4.5 h-4.5 text-gray-400" />
+          Upcoming Deadlines
+        </h3>
+        <div class="space-y-3" id="deadlinesContainer">
+          <!-- Dynamically populated deadlines -->
+        </div>
+      </div>
+
+      <!-- Application Tracker -->
+      <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col" id="appTrackerPanel">
+        <h3 class="font-outfit font-bold text-sm text-gray-900 mb-4 border-b border-gray-100 pb-2 flex items-center gap-2">
+          <Clock class="w-4.5 h-4.5 text-gray-400" />
+          Application Steps Tracker
+        </h3>
+        <div id="trackerEmpty" class="text-center py-6 text-gray-500 text-xs font-medium">
+          Select "Track Application" on a scholarship card to view steps.
+        </div>
+        <div id="trackerContent" class="hidden space-y-4">
+          <h4 class="text-xs font-bold text-gray-900 mb-2" id="trackedSchName">Scholarship Name</h4>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" id="step1" class="rounded accent-black cursor-pointer" />
+              <label for="step1" class="text-[11px] text-gray-600 cursor-pointer select-none font-medium">1. Gather Required Documents</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <input type="checkbox" id="step2" class="rounded accent-black cursor-pointer" />
+              <label for="step2" class="text-[11px] text-gray-600 cursor-pointer select-none font-medium">2. Verify Eligibility Criteria</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <input type="checkbox" id="step3" class="rounded accent-black cursor-pointer" />
+              <label for="step3" class="text-[11px] text-gray-600 cursor-pointer select-none font-medium">3. Apply on Official Portal</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <input type="checkbox" id="step4" class="rounded accent-black cursor-pointer" />
+              <label for="step4" class="text-[11px] text-gray-600 cursor-pointer select-none font-medium">4. Under verification by Institution</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <input type="checkbox" id="step5" class="rounded accent-black cursor-pointer" />
+              <label for="step5" class="text-[11px] text-gray-600 cursor-pointer select-none font-medium">5. Disbursed / Completed</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <script>
+    import { supabase, getSessionId } from '../utils/supabase';
+
+    // Protect route
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        window.location.replace('/login');
+      } else {
+        initDashboard();
+      }
+    });
+
+    // Constants — no longer needed for fallback
+    // Profile is fetched from Supabase or localStorage; if missing, showAll is used
+
+    let matchedScholarships = [];
+    let savedScholarships = JSON.parse(localStorage.getItem('saved_scholarships') || '[]');
+    let currentProfile: any = null;
+    let hasRealProfile = false;
+
+    // Load Data
+    async function initDashboard() {
+      const sessionId = await getSessionId();
+      
+      // 1. Fetch Profile
+      if (sessionId) {
+        const { data: sbProfile } = await supabase.from('profiles').select('*').eq('user_id', sessionId).single();
+        if (sbProfile && sbProfile.name) {
+          currentProfile = {
+            name: sbProfile.name,
+            age: sbProfile.age,
+            gender: sbProfile.gender,
+            state: sbProfile.state,
+            category: sbProfile.category,
+            familyIncome: sbProfile.family_income,
+            educationLevel: sbProfile.education_level,
+            currentCourse: sbProfile.current_course,
+            percentageOrCgpa: sbProfile.percentage_or_cgpa,
+            disabilityStatus: sbProfile.disability_status,
+            minorityStatus: sbProfile.minority_status
+          };
+          hasRealProfile = true;
+          localStorage.setItem('scholarship_profile', JSON.stringify(currentProfile));
+        }
+        
+        // 2. Fetch Saved Scholarships
+        const { data: sbSaved } = await supabase.from('saved_scholarships').select('scholarship_id').eq('user_id', sessionId);
+        if (sbSaved && sbSaved.length > 0) {
+          savedScholarships = sbSaved.map((row: any) => row.scholarship_id);
+          localStorage.setItem('saved_scholarships', JSON.stringify(savedScholarships));
+        }
+      }
+      
+      // Fallback to localStorage profile
+      if (!hasRealProfile) {
+        const stored = localStorage.getItem('scholarship_profile');
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            if (parsed && parsed.name) {
+              currentProfile = parsed;
+              hasRealProfile = true;
+            }
+          } catch(e) {}
+        }
+      }
+
+      // Update Banner Details
+      if (hasRealProfile && currentProfile) {
+        document.getElementById('welcomeUser').textContent = `Welcome back, ${currentProfile.name.split(' ')[0]}!`;
+        document.getElementById('welcomeSub').textContent = `Course: ${currentProfile.currentCourse || 'Not set'} • Category: ${currentProfile.category || 'Not set'} • State: ${currentProfile.state || 'Not set'}`;
+      } else {
+        document.getElementById('welcomeUser').textContent = `Welcome to ScholarSync AI!`;
+        document.getElementById('welcomeSub').textContent = `Complete your profile to get personalized match scores. Showing all available scholarships below.`;
+      }
+
+      // Call matching API
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+
+        const res = await fetch('/api/match', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            profile: hasRealProfile ? currentProfile : null,
+            showAll: !hasRealProfile
+          })
+        });
+        const data = await res.json();
+        matchedScholarships = [...(data.eligible || []), ...(data.ineligible || [])];
+        
+        renderMatches(matchedScholarships);
+        renderDeadlines(matchedScholarships);
+      } catch (error) {
+        console.error("Match error:", error);
+      }
+
+      renderSaved();
+
+      // Check if AI Discovery was triggered from Nav bar
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('runAi') === 'true') {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        await runAiDiscovery();
+      }
+    }
+
+    // Render matches
+    function renderMatches(list) {
+      const container = document.getElementById('recsContainer');
+      const searchVal = document.getElementById('schSearch').value.toLowerCase();
+      const typeFilter = document.getElementById('typeFilter').value;
+
+      // Filter local
+      const filtered = list.filter(item => {
+        const sch = item.scholarship;
+        const matchesSearch = sch.name.toLowerCase().includes(searchVal) || sch.sponsor.toLowerCase().includes(searchVal);
+        const matchesType = typeFilter === 'All' || sch.type === typeFilter;
+        return matchesSearch && matchesType;
+      });
+
+      // Update Summary
+      document.getElementById('recsSummary').textContent = `${filtered.length} matching found`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-20 bg-white rounded-2xl border border-gray-200 shadow-sm text-gray-500 text-xs font-medium">
+            No scholarships match your query. Try resetting filters.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const sch = item.scholarship;
+        const isSaved = savedScholarships.includes(sch.id);
+        
+        return `
+          <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:border-gray-300 hover:shadow-md transition-all flex flex-col gap-4">
+            <div class="flex justify-between items-start gap-4">
+              <div class="space-y-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-gray-100 text-gray-700 text-[9px] font-bold border border-gray-200">${sch.type}</span>
+                  <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[9px] font-bold border border-blue-100">Score: ${item.score}%</span>
+                  <span class="px-2 py-0.5 rounded bg-green-50 text-green-700 text-[9px] font-bold border border-green-100">Chance: ${item.successChance}%</span>
+                </div>
+                <h3 class="font-outfit font-bold text-base text-gray-900 mt-1.5">${sch.name}</h3>
+                <p class="text-[10px] text-gray-500">${sch.sponsor}</p>
+              </div>
+
+              <button onclick="toggleSave('${sch.id}')" class="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 hover:text-black text-gray-400 transition-colors shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-black">
+                <svg class="w-4 h-4" fill="${isSaved ? 'currentColor' : 'none'}" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
+              </button>
+            </div>
+
+            <p class="text-[11px] text-gray-600 leading-relaxed font-medium">${sch.description}</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 border-t border-gray-100 pt-4 text-[10px] text-gray-500">
+              <div>
+                <span class="block text-[8px] text-gray-400 uppercase font-bold tracking-wider">Benefits</span>
+                <span class="text-black font-bold text-xs mt-0.5 block">${sch.benefitAmount}</span>
+              </div>
+              <div>
+                <span class="block text-[8px] text-gray-400 uppercase font-bold tracking-wider">Deadline</span>
+                <span class="text-gray-900 font-semibold mt-0.5 block">${sch.deadline}</span>
+              </div>
+              <div class="col-span-2 md:col-span-1">
+                <span class="block text-[8px] text-gray-400 uppercase font-bold tracking-wider">Docs Required</span>
+                <span class="text-gray-700 font-medium mt-0.5 block">${sch.requiredDocuments.length} files</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 border-t border-gray-100 pt-4 justify-end">
+              <button onclick="trackApp('${sch.id}', '${sch.name.replace(/'/g, "\\'")}')" class="px-4 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 text-[10px] font-bold text-gray-700 transition-colors shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-black">
+                Track Application
+              </button>
+              <a href="${sch.officialLink}" target="_blank" class="px-4 py-2 rounded-xl bg-black text-white text-[10px] font-bold hover:bg-gray-800 transition-colors shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-black">
+                Apply Official
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Save toggle
+    async function toggleSave(id) {
+      const sessionId = await getSessionId();
+      if (savedScholarships.includes(id)) {
+        savedScholarships = savedScholarships.filter(s => s !== id);
+        if (sessionId) {
+          await supabase.from('saved_scholarships').delete().match({ user_id: sessionId, scholarship_id: id });
+        }
+      } else {
+        savedScholarships.push(id);
+        if (sessionId) {
+          await supabase.from('saved_scholarships').insert({ user_id: sessionId, scholarship_id: id });
+        }
+      }
+      localStorage.setItem('saved_scholarships', JSON.stringify(savedScholarships));
+      renderMatches(matchedScholarships);
+      renderSaved();
+    }
+    (window as any).toggleSave = toggleSave;
+
+    // Render saved list
+    function renderSaved() {
+      const container = document.getElementById('savedContainer');
+      const filtered = matchedScholarships.filter(item => savedScholarships.includes(item.scholarship.id));
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-6 text-gray-500 text-xs font-medium">
+            No saved scholarships yet.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => `
+        <div class="flex justify-between items-center p-3 rounded-xl bg-gray-50 border border-gray-200">
+          <div class="space-y-0.5">
+            <h4 class="text-[11px] font-bold text-gray-900 max-w-[150px] truncate">${item.scholarship.name}</h4>
+            <span class="text-[9px] text-gray-600 font-semibold">${item.scholarship.benefitAmount}</span>
+          </div>
+          <button onclick="toggleSave('${item.scholarship.id}')" class="text-[9px] text-gray-400 hover:text-black font-semibold outline-none transition-colors">Remove</button>
+        </div>
+      `).join('');
+    }
+
+    // Render deadlines list
+    function renderDeadlines(list) {
+      const container = document.getElementById('deadlinesContainer');
+      // Sort deadlines by date ascending
+      const deadlines = [...list].sort((a,b) => new Date(a.scholarship.deadline).getTime() - new Date(b.scholarship.deadline).getTime());
+      
+      container.innerHTML = deadlines.slice(0, 3).map(item => {
+        const sch = item.scholarship;
+        const days = Math.round((new Date(sch.deadline).getTime() - new Date().getTime()) / (1000 * 3600 * 24));
+        const warn = days < 30 ? "text-orange-600" : "text-gray-500";
+        
+        return `
+          <div class="p-3 rounded-xl bg-gray-50 border border-gray-200 flex justify-between items-center">
+            <div>
+              <p class="text-[11px] font-bold text-gray-900 max-w-[150px] truncate">${sch.name}</p>
+              <p class="text-[9px] text-gray-500">Close: ${sch.deadline}</p>
+            </div>
+            <span class="text-[10px] font-bold ${warn}">${days > 0 ? days + " days left" : "Ended"}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Tracker logic
+    async function trackApp(id, name) {
+      const panel = document.getElementById('trackerContent');
+      const empty = document.getElementById('trackerEmpty');
+      const titleEl = document.getElementById('trackedSchName');
+      const sessionId = await getSessionId();
+      
+      empty?.classList.add('hidden');
+      panel?.classList.remove('hidden');
+      if (titleEl) titleEl.textContent = name;
+
+      let savedSteps = [false, false, false, false, false];
+      const trackerKey = `tracker_${id}`;
+      
+      if (sessionId) {
+        const { data: dbProgress } = await supabase.from('application_progress').select('steps').match({ user_id: sessionId, scholarship_id: id }).single();
+        if (dbProgress) {
+          savedSteps = dbProgress.steps;
+          localStorage.setItem(trackerKey, JSON.stringify(savedSteps));
+        } else {
+          savedSteps = JSON.parse(localStorage.getItem(trackerKey) || '[false, false, false, false, false]');
+        }
+      }
+
+      [1, 2, 3, 4, 5].forEach(num => {
+        const el = document.getElementById(`step${num}`);
+        if (el) {
+          el.checked = savedSteps[num - 1];
+          el.onchange = async () => {
+            savedSteps[num - 1] = el.checked;
+            localStorage.setItem(trackerKey, JSON.stringify(savedSteps));
+            
+            if (sessionId) {
+              await supabase.from('application_progress').upsert({
+                user_id: sessionId,
+                scholarship_id: id,
+                steps: savedSteps
+              }, { onConflict: 'user_id, scholarship_id' });
+            }
+          };
+        }
+      });
+    }
+    (window as any).trackApp = trackApp;
+
+    // Voice search simulation / web SpeechRecognition API
+    const voiceSearchBtn = document.getElementById('voiceSearchBtn');
+    const voiceRipple = document.getElementById('voiceRipple');
+    const schSearchInput = document.getElementById('schSearch');
+    
+    try {
+      if (voiceSearchBtn && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'en-IN';
+        
+        voiceSearchBtn.addEventListener('click', () => {
+          voiceRipple?.classList.remove('hidden');
+          recognition.start();
+        });
+
+        recognition.onresult = (e) => {
+          voiceRipple?.classList.add('hidden');
+          const transcript = e.results[0][0].transcript;
+          if (schSearchInput) schSearchInput.value = transcript;
+          renderMatches(matchedScholarships);
+        };
+
+        recognition.onerror = () => voiceRipple?.classList.add('hidden');
+        recognition.onend = () => voiceRipple?.classList.add('hidden');
+      } else if (voiceSearchBtn) {
+        voiceSearchBtn.addEventListener('click', () => {
+          alert("Speech recognition is not supported in this browser. Try Google Chrome.");
+        });
+      }
+    } catch (e) {
+      console.warn("Speech recognition unavailable:", e);
+      if (voiceSearchBtn) {
+        voiceSearchBtn.addEventListener('click', () => {
+          alert("Speech recognition is not supported in this browser. Try Google Chrome.");
+        });
+      }
+    }
+
+    // Modal triggers
+    function openModal(modal) {
+      if (modal) modal.classList.remove('hidden');
+    }
+    function closeModal(modal) {
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function runAiDiscovery() {
+      // Add a loading indicator to the UI
+      const container = document.getElementById('recsContainer');
+      const originalHtml = container.innerHTML;
+      container.innerHTML = `
+        <div class="text-center py-20 text-gray-500 text-xs font-medium flex flex-col items-center justify-center gap-4">
+          <span class="w-8 h-8 rounded-full border-4 border-gray-200 border-t-black animate-spin"></span>
+          AI Agent is scanning the globe for your scholarships...
+        </div>
+      `;
+
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+
+        const res = await fetch('/api/ai-search', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ profile: currentProfile })
+        });
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          matchedScholarships = [...data.results, ...matchedScholarships];
+          renderMatches(matchedScholarships);
+          renderDeadlines(matchedScholarships);
+        } else {
+          alert("AI could not find matching scholarships. Try again later.");
+          container.innerHTML = originalHtml;
+        }
+      } catch (e) {
+        alert("Error calling AI Search.");
+        container.innerHTML = originalHtml;
+      }
+    }
+
+    // Filter listeners
+    schSearchInput.addEventListener('input', () => renderMatches(matchedScholarships));
+    document.getElementById('typeFilter').addEventListener('change', () => renderMatches(matchedScholarships));
+
+  </script>
+</Layout>

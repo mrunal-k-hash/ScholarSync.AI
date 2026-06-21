@@ -1,11 +1,695 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import PrimerGrid from '../components/PrimerGrid.astro';
+import { 
+  ArrowRight, 
+  Sparkles, 
+  Search, 
+  Brain, 
+  FileCheck, 
+  MessageSquare, 
+  CheckCircle,
+  HelpCircle,
+  Mail,
+  UserCheck,
+  TrendingUp,
+  Award
+} from '@lucide/astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="ScholarSync AI | Discover Your Perfect Financial Aid" activePage="home">
+  <!-- Hero Section -->
+  <section class="relative py-20 lg:py-28 overflow-hidden bg-gray-50 flex justify-center">
+    <!-- Decorative Background Grids -->
+    <PrimerGrid 
+      cols={8} 
+      rows={8} 
+      cellSize={32}
+      cells={[
+        { row: 0, col: 4, color: 'bg-[#3B82F6]' },
+        { row: 4, col: 4, color: 'bg-[#FFD13B]' },
+        { row: 5, col: 2, color: 'bg-[#FF6B2B]' },
+        { row: 7, col: 7, color: 'bg-[#3B82F6]' }
+      ]}
+      className="absolute -left-16 top-0 hidden lg:grid shadow-sm z-0"
+    />
+    
+    <PrimerGrid 
+      cols={6} 
+      rows={6} 
+      cellSize={32}
+      cells={[
+        { row: 1, col: 1, color: 'bg-[#FFD13B]' },
+        { row: 2, col: 5, color: 'bg-[#FF6B2B]' },
+        { row: 4, col: 2, color: 'bg-[#3B82F6]' }
+      ]}
+      className="absolute -right-8 bottom-20 hidden lg:grid shadow-sm z-0"
+    />
+
+    <div class="text-center max-w-4xl mx-auto space-y-8 relative z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white text-gray-800 border border-gray-200 text-xs font-semibold tracking-wide shadow-sm">
+        <Sparkles class="w-4.5 h-4.5 text-gray-500" />
+        AI-Powered Match Engine Live
+      </div>
+      
+      <h1 class="font-outfit text-5xl md:text-7xl font-black tracking-tight leading-tight text-gray-900 text-balance">
+        Discover Scholarships <br class="hidden sm:inline" />
+        Matched to Your Profile
+      </h1>
+      
+      <p class="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed text-pretty">
+        Upload your academic details and documents. Our intelligent AI scans 1,000+ government & private schemes to find your eligible scholarships in seconds.
+      </p>
+ 
+       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        <a href="/dashboard" id="ctaBtnMain" class="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold bg-black hover:bg-gray-800 text-white shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-black transition-colors flex items-center justify-center gap-2">
+          Find My Scholarships
+          <ArrowRight class="w-5 h-5" aria-hidden="true" />
+        </a>
+        <a href="#demo" class="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold bg-white border border-gray-200 text-black hover:bg-gray-50 shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-black transition-colors flex items-center justify-center gap-2">
+          Try Live Demo
+        </a>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-16 max-w-5xl mx-auto">
+        <div class="bg-white border border-gray-200 shadow-sm p-6 rounded-2xl text-center hover:border-gray-300 transition-colors">
+          <span class="block font-outfit text-3xl font-black text-gray-900">₹10Cr+</span>
+          <span class="text-xs text-gray-500 font-medium">Disbursed Funds</span>
+        </div>
+        <div class="bg-white border border-gray-200 shadow-sm p-6 rounded-2xl text-center hover:border-gray-300 transition-colors">
+          <span class="block font-outfit text-3xl font-black text-gray-900">95%</span>
+          <span class="text-xs text-gray-500 font-medium">Match Accuracy</span>
+        </div>
+        <div class="bg-white border border-gray-200 shadow-sm p-6 rounded-2xl text-center hover:border-gray-300 transition-colors">
+          <span class="block font-outfit text-3xl font-black text-gray-900">1,500+</span>
+          <span class="text-xs text-gray-500 font-medium">Active Schemes</span>
+        </div>
+        <div class="bg-white border border-gray-200 shadow-sm p-6 rounded-2xl text-center hover:border-gray-300 transition-colors">
+          <span class="block font-outfit text-3xl font-black text-gray-900">50K+</span>
+          <span class="text-xs text-gray-500 font-medium">Registered Students</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="py-20 border-t border-gray-200 bg-white">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-4 px-4">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 text-gray-800 border border-gray-200 text-xs font-semibold tracking-wide">
+        <Brain class="w-4 h-4 text-gray-500" />
+        Powered by Advanced AI
+      </div>
+      <h2 class="font-outfit text-3xl md:text-4xl font-bold text-gray-900">How ScholarSync AI Works</h2>
+      <p class="text-gray-500 text-sm md:text-base font-medium max-w-2xl mx-auto leading-relaxed text-pretty">
+        Our platform combines artificial intelligence, OCR document scanning, and a real-time scholarship database to match you with funding opportunities you'd never find on your own — in under 60 seconds.
+      </p>
+    </div>
+
+    <!-- Step-by-Step Flow -->
+    <div class="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto px-4 mb-20">
+      <!-- Step 1 -->
+      <div class="relative bg-white border border-gray-200 shadow-sm p-6 rounded-2xl hover:border-gray-300 hover:shadow-md transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-[#3B82F6] text-white flex items-center justify-center font-bold font-outfit text-lg mb-4 shadow-sm group-hover:scale-105 transition-transform">
+          1
+        </div>
+        <h3 class="font-outfit font-bold text-lg mb-2 text-gray-900">Build Your Profile</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Tell us about your education level, academic scores, annual family income, state, caste category, and any special statuses (minority, disability). Takes under 2 minutes.</p>
+        <div class="mt-3 flex items-center gap-1.5 text-[10px] text-blue-600 font-semibold">
+          <UserCheck class="w-3.5 h-3.5" />
+          Saved securely to your dashboard
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="relative bg-white border border-gray-200 shadow-sm p-6 rounded-2xl hover:border-gray-300 hover:shadow-md transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-[#FFD13B] text-black flex items-center justify-center font-bold font-outfit text-lg mb-4 shadow-sm group-hover:scale-105 transition-transform">
+          2
+        </div>
+        <h3 class="font-outfit font-bold text-lg mb-2 text-gray-900">Scan Documents with OCR</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Upload your Aadhaar card, caste certificate, or income papers. Our built-in <span class="text-gray-700 font-semibold">Tesseract OCR engine</span> extracts text directly in your browser — nothing leaves your device.</p>
+        <div class="mt-3 flex items-center gap-1.5 text-[10px] text-amber-600 font-semibold">
+          <FileCheck class="w-3.5 h-3.5" />
+          100% client-side, fully private
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="relative bg-white border border-gray-200 shadow-sm p-6 rounded-2xl hover:border-gray-300 hover:shadow-md transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-[#FF6B2B] text-white flex items-center justify-center font-bold font-outfit text-lg mb-4 shadow-sm group-hover:scale-105 transition-transform">
+          3
+        </div>
+        <h3 class="font-outfit font-bold text-lg mb-2 text-gray-900">AI Matches You Instantly</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Our <span class="text-gray-700 font-semibold">AI matching engine</span> cross-references your profile against <span class="text-gray-700 font-semibold">1,500+ active scholarship schemes</span> — government, state-level, and private — ranking them by eligibility score and success probability.</p>
+        <div class="mt-3 flex items-center gap-1.5 text-[10px] text-orange-600 font-semibold">
+          <Sparkles class="w-3.5 h-3.5" />
+          95% match accuracy
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="relative bg-white border border-gray-200 shadow-sm p-6 rounded-2xl hover:border-gray-300 hover:shadow-md transition-all group">
+        <div class="w-12 h-12 rounded-xl bg-[#10B981] text-white flex items-center justify-center font-bold font-outfit text-lg mb-4 shadow-sm group-hover:scale-105 transition-transform">
+          4
+        </div>
+        <h3 class="font-outfit font-bold text-lg mb-2 text-gray-900">Apply with AI Guidance</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Get step-by-step application instructions, use our <span class="text-gray-700 font-semibold">AI chat assistant</span> to draft cover letters, resolve doubts about deadlines, and click through to the official portals (NSP, state sites) directly.</p>
+        <div class="mt-3 flex items-center gap-1.5 text-[10px] text-emerald-600 font-semibold">
+          <CheckCircle class="w-3.5 h-3.5" />
+          Guided end-to-end
+        </div>
+      </div>
+    </div>
+
+    <!-- AI & Platform Features Breakdown -->
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12 space-y-3">
+        <h3 class="font-outfit text-2xl md:text-3xl font-bold text-gray-900">What Makes Our AI Different</h3>
+        <p class="text-gray-500 text-xs md:text-sm font-medium max-w-xl mx-auto">
+          Every feature on ScholarSync is designed to eliminate the friction between you and your funding.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- AI Matching Engine -->
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-gray-300 hover:shadow-sm transition-all flex gap-5">
+          <div class="w-11 h-11 rounded-xl bg-[#3B82F6] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+            <Brain class="w-5 h-5" />
+          </div>
+          <div class="space-y-2">
+            <h4 class="font-outfit font-bold text-base text-gray-900">AI Scholarship Matching Engine</h4>
+            <p class="text-xs text-gray-500 leading-relaxed">Our core AI engine evaluates your profile parameters — academic marks, caste category, disability status, annual family income, state of domicile, and education level — against every active government and private scholarship scheme. It generates a <span class="text-gray-700 font-semibold">match percentage score</span> for each scheme, highlights missing eligibility criteria, and ranks results by your likelihood of success.</p>
+          </div>
+        </div>
+
+        <!-- OCR Document Analyzer -->
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-gray-300 hover:shadow-sm transition-all flex gap-5">
+          <div class="w-11 h-11 rounded-xl bg-[#FFD13B] text-black flex items-center justify-center flex-shrink-0 shadow-sm">
+            <Search class="w-5 h-5" />
+          </div>
+          <div class="space-y-2">
+            <h4 class="font-outfit font-bold text-base text-gray-900">OCR Document Analyzer</h4>
+            <p class="text-xs text-gray-500 leading-relaxed">Upload your Aadhaar card, caste certificate, income certificate, or academic marksheet. Our <span class="text-gray-700 font-semibold">Tesseract OCR engine</span> runs entirely in your browser — your documents never leave your device. It automatically extracts key fields (name, income figures, category) and verifies them against your profile for instant validation.</p>
+          </div>
+        </div>
+
+        <!-- AI Chat Assistant -->
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-gray-300 hover:shadow-sm transition-all flex gap-5">
+          <div class="w-11 h-11 rounded-xl bg-[#FF6B2B] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+            <MessageSquare class="w-5 h-5" />
+          </div>
+          <div class="space-y-2">
+            <h4 class="font-outfit font-bold text-base text-gray-900">AI Chat Assistant</h4>
+            <p class="text-xs text-gray-500 leading-relaxed">Have questions about specific scheme limits, eligibility criteria, or application deadlines? Our <span class="text-gray-700 font-semibold">OpenRouter-powered AI chatbot</span> provides instant, contextual answers. It can help you draft cover letters, explain complex scholarship terms, resolve portal doubts, and guide you through document preparation — all in a natural conversation.</p>
+          </div>
+        </div>
+
+        <!-- Eligibility Checker -->
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-gray-300 hover:shadow-sm transition-all flex gap-5">
+          <div class="w-11 h-11 rounded-xl bg-[#10B981] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+            <CheckCircle class="w-5 h-5" />
+          </div>
+          <div class="space-y-2">
+            <h4 class="font-outfit font-bold text-base text-gray-900">One-Click Eligibility Checker</h4>
+            <p class="text-xs text-gray-500 leading-relaxed">Instantly see which scholarships you <span class="text-gray-700 font-semibold">qualify for and which you don't</span> — with explicit explanations for every mismatch. If your income is ₹10K over a limit or you're missing one document, the checker tells you exactly what to fix and how, turning rejections into actionable next steps.</p>
+          </div>
+        </div>
+
+        <!-- Success Predictor -->
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-gray-300 hover:shadow-sm transition-all flex gap-5">
+          <div class="w-11 h-11 rounded-xl bg-[#8B5CF6] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+            <TrendingUp class="w-5 h-5" />
+          </div>
+          <div class="space-y-2">
+            <h4 class="font-outfit font-bold text-base text-gray-900">Success Probability Predictor</h4>
+            <p class="text-xs text-gray-500 leading-relaxed">Don't just know if you're eligible — know <span class="text-gray-700 font-semibold">how likely you are to win</span>. Our AI analyzes historical merit cutoffs, applicant volumes, and fund disbursement patterns to calculate a percentage probability of securing each scholarship, helping you prioritize high-confidence opportunities first.</p>
+          </div>
+        </div>
+
+        <!-- Voice & Translation -->
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-gray-300 hover:shadow-sm transition-all flex gap-5">
+          <div class="w-11 h-11 rounded-xl bg-[#F43F5E] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+            <Award class="w-5 h-5" />
+          </div>
+          <div class="space-y-2">
+            <h4 class="font-outfit font-bold text-base text-gray-900">Voice Search & Regional Translation</h4>
+            <p class="text-xs text-gray-500 leading-relaxed">Search for scholarships using <span class="text-gray-700 font-semibold">voice commands</span> in your preferred language. The entire platform interface can be translated dynamically into regional languages — Hindi, Marathi, Tamil, Telugu, and more — making financial aid accessible to every student regardless of their primary language.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-20 border-t border-gray-200 bg-gray-50">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <h2 class="font-outfit text-3xl md:text-4xl font-bold text-gray-900">Cutting-Edge Features</h2>
+      <p class="text-gray-500 text-sm md:text-base font-medium">
+        Everything you need to successfully secure financial funding, all in one dashboard.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+      <!-- Feature 1 -->
+      <div class="bg-white shadow-sm border border-gray-200 p-8 rounded-2xl hover:border-gray-300 transition-colors flex flex-col gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#FFD13B] text-black flex items-center justify-center border border-black shadow-sm">
+          <Brain class="w-6 h-6" />
+        </div>
+        <h3 class="font-outfit font-bold text-xl text-gray-900">AI Scholarship Matching</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Matches parameters (marks, caste category, disability, annual income) against active state and private programs.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="bg-white shadow-sm border border-gray-200 p-8 rounded-2xl hover:border-gray-300 transition-colors flex flex-col gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#3B82F6] text-white flex items-center justify-center border border-black shadow-sm">
+          <Search class="w-6 h-6" />
+        </div>
+        <h3 class="font-outfit font-bold text-xl text-gray-900">OCR Document Analyzer</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Simply upload Aadhaar, Caste, or Income papers. Extraction happens on-device with high-accuracy Tesseract OCR.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="bg-white shadow-sm border border-gray-200 p-8 rounded-2xl hover:border-gray-300 transition-colors flex flex-col gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#FF6B2B] text-white flex items-center justify-center border border-black shadow-sm">
+          <MessageSquare class="w-6 h-6" />
+        </div>
+        <h3 class="font-outfit font-bold text-xl text-gray-900">AI Chat Assistant</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Have questions about specific scheme limits or deadlines? Our OpenRouter powered chatbot provides answers instantly.</p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="bg-white shadow-sm border border-gray-200 p-8 rounded-2xl hover:border-gray-300 transition-colors flex flex-col gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#10B981] text-white flex items-center justify-center border border-black shadow-sm">
+          <FileCheck class="w-6 h-6" />
+        </div>
+        <h3 class="font-outfit font-bold text-xl text-gray-900">One-Click Eligibility</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Check eligible vs ineligible categories, view explicit criteria mismatches, and discover instructions to resolve them.</p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="bg-white shadow-sm border border-gray-200 p-8 rounded-2xl hover:border-gray-300 transition-colors flex flex-col gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#8B5CF6] text-white flex items-center justify-center border border-black shadow-sm">
+          <TrendingUp class="w-6 h-6" />
+        </div>
+        <h3 class="font-outfit font-bold text-xl text-gray-900">Success Predictor</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Calculates percentage probabilities of securing funding based on historical merit criteria and applicant volumes.</p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="bg-white shadow-sm border border-gray-200 p-8 rounded-2xl hover:border-gray-300 transition-colors flex flex-col gap-4">
+        <div class="w-12 h-12 rounded-xl bg-[#F43F5E] text-white flex items-center justify-center border border-black shadow-sm">
+          <Award class="w-6 h-6" />
+        </div>
+        <h3 class="font-outfit font-bold text-xl text-gray-900">Voice & Translation</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Search via voice commands and translate the entire platform interface dynamically into regional languages.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Matching Demo Section -->
+  <section class="py-20 border-t border-gray-200 scroll-mt-24 bg-white" id="demo">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <h2 class="font-outfit text-3xl md:text-4xl font-bold text-gray-900 text-pretty">Interactive AI Match Simulator</h2>
+      <p class="text-gray-500 text-sm md:text-base font-medium text-pretty">
+        Test our matching engine right here by adjusting the profile sliders.
+      </p>
+    </div>
+
+    <div class="max-w-5xl mx-auto grid md:grid-cols-5 gap-8 px-4">
+      <!-- Input controls (2 cols) -->
+      <div class="md:col-span-2 bg-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-6">
+        <h3 class="font-outfit font-bold text-lg text-gray-900 border-b border-gray-200 pb-2">Simulator Profile</h3>
+        
+        <div>
+          <label for="demoCategory" class="block text-xs font-semibold text-gray-700 mb-2">Category (Caste)</label>
+          <select id="demoCategory" name="category" class="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-300 text-gray-900 outline-none focus-visible:ring-2 focus-visible:ring-black">
+            <option value="OBC">OBC</option>
+            <option value="General">General</option>
+            <option value="SC">SC</option>
+            <option value="ST">ST</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="demoIncome" class="block text-xs font-semibold text-gray-700 mb-2">Annual Family Income</label>
+          <input type="range" id="demoIncome" name="familyIncome" min="50000" max="2000000" step="50000" value="200000" class="w-full accent-black outline-none focus-visible:ring-2 focus-visible:ring-black rounded-lg" />
+          <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+            <span>₹50K</span>
+            <span id="incomeVal" class="text-gray-900 font-bold">₹2,00,000</span>
+            <span>₹20L</span>
+          </div>
+        </div>
+
+        <div>
+          <label for="demoPercentage" class="block text-xs font-semibold text-gray-700 mb-2">Academic Score (Percentage)</label>
+          <input type="range" id="demoPercentage" name="academicScore" min="40" max="100" step="1" value="75" class="w-full accent-black outline-none focus-visible:ring-2 focus-visible:ring-black rounded-lg" />
+          <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+            <span>40%</span>
+            <span id="percentageVal" class="text-gray-900 font-bold">75%</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <div>
+          <span class="block text-xs font-semibold text-gray-700 mb-2">Special Statuses</span>
+          <div class="flex flex-col gap-2">
+            <label class="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
+              <input type="checkbox" id="demoDisability" name="disabilityStatus" class="rounded accent-black outline-none focus-visible:ring-2 focus-visible:ring-black" />
+              Physical Disability (40%+)
+            </label>
+            <label class="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
+              <input type="checkbox" id="demoMinority" name="minorityStatus" class="rounded accent-black outline-none focus-visible:ring-2 focus-visible:ring-black" />
+              Minority Community
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results list (3 cols) -->
+      <div class="md:col-span-3 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
+        <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
+          <h3 class="font-outfit font-bold text-lg text-gray-900">Matching Scholarships</h3>
+          <span class="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-800 border border-gray-200 text-xs font-bold" id="matchCount">4 Matches</span>
+        </div>
+        
+        <div class="space-y-4 flex-grow overflow-y-auto max-h-[350px]" id="demoResults">
+          <!-- Rendered matching scholarships will load dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-20 border-t border-gray-200 bg-gray-50">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <h2 class="font-outfit text-3xl md:text-4xl font-bold text-gray-900 text-pretty">Student Success Stories</h2>
+      <p class="text-gray-500 text-sm md:text-base font-medium text-pretty">
+        Hear from students who funded their education using our platform.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+      <div class="bg-white shadow-sm p-6 rounded-2xl flex flex-col justify-between border border-gray-200">
+        <p class="text-xs text-gray-500 leading-relaxed italic mb-6 text-pretty">
+          “I was struggling to pay my final year B.Tech fees. The OCR analyzer matched my caste and income to a state Post-Matric scheme I had never heard of. I got my entire tuition fee reimbursed!”
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-gray-700 text-sm">
+            RK
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-gray-900">Rahul Kulkarni</h4>
+            <span class="text-[10px] text-gray-500">MUMBAI UNIVERSITY</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white shadow-sm p-6 rounded-2xl flex flex-col justify-between border border-gray-200">
+        <p class="text-xs text-gray-500 leading-relaxed italic mb-6 text-pretty">
+          “Thanks to the Reliance Foundation Scholarship match on this portal, I received ₹2 Lakhs support. The AI Chatbot helped me prepare my required document formats and resolved my portal doubts.”
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-gray-700 text-sm">
+            AP
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-gray-900">Ananya Patel</h4>
+            <span class="text-[10px] text-gray-500">B.SC CHEMISTRY, AHMEDABAD</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white shadow-sm p-6 rounded-2xl flex flex-col justify-between border border-gray-200">
+        <p class="text-xs text-gray-500 leading-relaxed italic mb-6 text-pretty">
+          “I didn’t think I would qualify for international aid. The NOS (National Overseas Scholarship) SC match changed my life. I am now pursuing my Master’s at King’s College London with full state funding.”
+        </p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-gray-700 text-sm">
+            DK
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-gray-900">Deepak Kumar</h4>
+            <span class="text-[10px] text-gray-500">KCL, LONDON</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section (Accordion) -->
+  <section class="py-20 border-t border-gray-200 bg-white">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <h2 class="font-outfit text-3xl md:text-4xl font-bold text-gray-900 text-pretty">Frequently Asked Questions</h2>
+      <p class="text-gray-500 text-sm md:text-base font-medium text-pretty">
+        Got questions? We’ve got answers.
+      </p>
+    </div>
+
+    <div class="max-w-3xl mx-auto space-y-4 px-4">
+      <!-- FAQ 1 -->
+      <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden transition-all duration-300">
+        <button class="w-full px-6 py-5 text-left flex justify-between items-center outline-none focus-visible:ring-2 focus-visible:ring-black group" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-content-1">
+          <span class="font-outfit font-bold text-sm text-gray-900 group-hover:text-black transition-colors">Is this service free for students?</span>
+          <HelpCircle class="w-4 h-4 text-gray-400 transition-transform duration-300" aria-hidden="true" />
+        </button>
+        <div id="faq-content-1" class="px-6 pb-5 text-xs text-gray-500 leading-relaxed max-h-0 hidden transition-all overflow-hidden duration-300 bg-gray-50">
+          Yes! ScholarSync AI is 100% free for all students. Our mission is to democratize access to financial support and reduce administrative dropouts.
+        </div>
+      </div>
+
+      <!-- FAQ 2 -->
+      <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden transition-all duration-300">
+        <button class="w-full px-6 py-5 text-left flex justify-between items-center outline-none focus-visible:ring-2 focus-visible:ring-black group" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-content-2">
+          <span class="font-outfit font-bold text-sm text-gray-900 group-hover:text-black transition-colors">How secure is my uploaded document data?</span>
+          <HelpCircle class="w-4 h-4 text-gray-400 transition-transform duration-300" aria-hidden="true" />
+        </button>
+        <div id="faq-content-2" class="px-6 pb-5 text-xs text-gray-500 leading-relaxed max-h-0 hidden transition-all overflow-hidden duration-300 bg-gray-50">
+          Extremely secure. The Tesseract OCR analyzer executes entirely client-side in your browser. Your documents are not uploaded to our servers, keeping your personal records completely private.
+        </div>
+      </div>
+
+      <!-- FAQ 3 -->
+      <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden transition-all duration-300">
+        <button class="w-full px-6 py-5 text-left flex justify-between items-center outline-none focus-visible:ring-2 focus-visible:ring-black group" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-content-3">
+          <span class="font-outfit font-bold text-sm text-gray-900 group-hover:text-black transition-colors">Can I apply directly on this site?</span>
+          <HelpCircle class="w-4 h-4 text-gray-400 transition-transform duration-300" aria-hidden="true" />
+        </button>
+        <div id="faq-content-3" class="px-6 pb-5 text-xs text-gray-500 leading-relaxed max-h-0 hidden transition-all overflow-hidden duration-300 bg-gray-50">
+          We match you and guide you step-by-step through document checkmarks. For submission, we provide direct official application links (like NSP or corporate foundation URLs) to ensure legal security.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="py-20 border-t border-gray-200 bg-gray-50">
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl border border-gray-200 shadow-sm p-8 md:p-12 relative overflow-hidden mx-4">
+      <div class="grid md:grid-cols-5 gap-8 items-center">
+        <div class="md:col-span-2 space-y-4">
+          <h2 class="font-outfit text-3xl font-bold text-gray-900">Have a Query?</h2>
+          <p class="text-xs text-gray-500 leading-relaxed">
+            Get in touch with our partnerships team or request support for integrating specific state schemes.
+          </p>
+          <div class="flex items-center gap-3 text-xs text-gray-600 pt-2 font-medium">
+            <Mail class="w-4 h-4 text-gray-400" aria-hidden="true" />
+            support@scholarsync.ai
+          </div>
+        </div>
+
+        <form class="md:col-span-3 space-y-4" id="contactForm" method="POST">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="contactName" class="block text-[10px] font-semibold text-gray-500 mb-1">NAME</label>
+              <input type="text" id="contactName" name="name" placeholder="Your Name…" required autocomplete="name" class="w-full px-3 py-2.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 outline-none focus-visible:ring-2 focus-visible:ring-black" />
+            </div>
+            <div>
+              <label for="contactEmail" class="block text-[10px] font-semibold text-gray-500 mb-1">EMAIL</label>
+              <input type="email" id="contactEmail" name="email" placeholder="Your Email…" required autocomplete="email" spellcheck="false" class="w-full px-3 py-2.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 outline-none focus-visible:ring-2 focus-visible:ring-black" />
+            </div>
+          </div>
+          <div>
+            <label for="contactMessage" class="block text-[10px] font-semibold text-gray-500 mb-1">MESSAGE</label>
+            <textarea id="contactMessage" name="message" rows="3" placeholder="Tell us how we can help…" required class="w-full px-3 py-2.5 text-xs rounded-xl bg-gray-50 border border-gray-300 text-gray-900 outline-none focus-visible:ring-2 focus-visible:ring-black"></textarea>
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-black hover:bg-gray-800 text-white font-semibold text-xs shadow-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-black">
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive JavaScript for Match Simulator and FAQ Toggle -->
+  <script is:inline>
+    // FAQ Toggle
+    function toggleFaq(btn) {
+      const parent = btn.parentElement;
+      const content = parent.querySelector('div');
+      const icon = btn.querySelector('svg');
+      
+      const isOpen = !content.classList.contains('hidden');
+      
+      // Close all first
+      document.querySelectorAll('.bg-gray-50 button').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+      });
+      document.querySelectorAll('.bg-gray-50 button + div').forEach(div => {
+        div.classList.add('hidden');
+        div.style.maxHeight = '0px';
+      });
+      document.querySelectorAll('.bg-gray-50 button svg').forEach(svg => {
+        svg.style.transform = 'rotate(0deg)';
+      });
+
+      if (!isOpen) {
+        btn.setAttribute('aria-expanded', 'true');
+        content.classList.remove('hidden');
+        content.style.maxHeight = '200px';
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    // Contact Form Alert
+    document.getElementById('contactForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Thank you for reaching out! Our team will contact you shortly.');
+      e.target.reset();
+    });
+
+    // Match Simulator Data & Logic
+    const SIMULATOR_SCHOLARSHIPS = [
+      {
+        name: "Reliance Foundation Undergraduate Scholarship",
+        type: "Private",
+        benefit: "Up to ₹2,00,000",
+        minPercentage: 60,
+        maxIncome: 1500000,
+        categories: ["General", "OBC", "SC", "ST"]
+      },
+      {
+        name: "Tata Capital Pankh Scholarship",
+        type: "Need-Based",
+        benefit: "Up to ₹50,000",
+        minPercentage: 60,
+        maxIncome: 400000,
+        categories: ["General", "OBC", "SC", "ST"]
+      },
+      {
+        name: "Post-Matric Scholarship for OBC Students",
+        type: "State-Specific",
+        benefit: "Full Tuition Fee Reimbursement",
+        minPercentage: 50,
+        maxIncome: 250000,
+        categories: ["OBC"]
+      },
+      {
+        name: "National Overseas Scholarship for SC/ST",
+        type: "International",
+        benefit: "Full Funding Abroad",
+        minPercentage: 60,
+        maxIncome: 800000,
+        categories: ["SC", "ST"]
+      },
+      {
+        name: "MOMA Merit-cum-Means Minority Scholarship",
+        type: "Government",
+        benefit: "₹20,000/year",
+        minPercentage: 50,
+        maxIncome: 250000,
+        requiresMinority: true,
+        categories: ["General", "OBC", "SC", "ST"]
+      },
+      {
+        name: "NHFDC Scholarship for Disabled Students",
+        type: "Government",
+        benefit: "₹30,000/year",
+        minPercentage: 50,
+        maxIncome: 2000000,
+        requiresDisability: true,
+        categories: ["General", "OBC", "SC", "ST"]
+      }
+    ];
+
+    const categoryInput = document.getElementById('demoCategory');
+    const incomeInput = document.getElementById('demoIncome');
+    const percentageInput = document.getElementById('demoPercentage');
+    const disabilityInput = document.getElementById('demoDisability');
+    const minorityInput = document.getElementById('demoMinority');
+    
+    const incomeVal = document.getElementById('incomeVal');
+    const percentageVal = document.getElementById('percentageVal');
+    const resultsContainer = document.getElementById('demoResults');
+    const countBadge = document.getElementById('matchCount');
+
+    function updateSimulator() {
+      const category = categoryInput.value;
+      const income = parseInt(incomeInput.value);
+      const percentage = parseInt(percentageInput.value);
+      const requiresDisability = disabilityInput.checked;
+      const requiresMinority = minorityInput.checked;
+
+      // Update Labels
+      incomeVal.textContent = "₹" + income.toLocaleString('en-IN');
+      percentageVal.textContent = percentage + "%";
+
+      // Filter logic
+      const matches = SIMULATOR_SCHOLARSHIPS.filter(s => {
+        if (!s.categories.includes(category)) return false;
+        if (s.maxIncome && income > s.maxIncome) return false;
+        if (s.minPercentage && percentage < s.minPercentage) return false;
+        if (s.requiresDisability && !requiresDisability) return false;
+        if (s.requiresMinority && !requiresMinority) return false;
+        return true;
+      });
+
+      // Update Badge
+      countBadge.textContent = matches.length + (matches.length === 1 ? " Match" : " Matches");
+
+      // Render items
+      if (matches.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="text-center py-12 text-gray-500 text-xs font-medium">
+            No scholarships found for this criteria. Try sliding down the income or category inputs.
+          </div>
+        `;
+        return;
+      }
+
+      resultsContainer.innerHTML = matches.map(s => `
+        <div class="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-all">
+          <div class="space-y-1">
+            <span class="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-600 text-[9px] font-bold uppercase tracking-wider">${s.type}</span>
+            <h4 class="text-xs font-bold text-gray-900 mt-1">${s.name}</h4>
+            <p class="text-[10px] text-gray-500">Award: <span class="text-black font-semibold">${s.benefit}</span></p>
+          </div>
+          <a href="/dashboard" class="px-3 py-1.5 rounded-lg bg-black text-white text-[10px] font-bold hover:bg-gray-800 transition-colors">
+            View Details
+          </a>
+        </div>
+      `).join('');
+    }
+
+    // Bind event listeners
+    categoryInput?.addEventListener('change', updateSimulator);
+    incomeInput?.addEventListener('input', updateSimulator);
+    percentageInput?.addEventListener('input', updateSimulator);
+    disabilityInput?.addEventListener('change', updateSimulator);
+    minorityInput?.addEventListener('change', updateSimulator);
+
+    // Initial Trigger
+    updateSimulator();
+  </script>
+
+  <script>
+    import { supabase } from '../utils/supabase';
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const ctaBtn = document.getElementById('ctaBtnMain') as HTMLAnchorElement;
+      if (session && ctaBtn) {
+        ctaBtn.innerHTML = `Go to Dashboard <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>`;
+        ctaBtn.href = '/dashboard';
+      } else if (ctaBtn) {
+        ctaBtn.href = '/login';
+      }
+    });
+  </script>
 </Layout>

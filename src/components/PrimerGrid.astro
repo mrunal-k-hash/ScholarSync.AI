@@ -1,0 +1,36 @@
+---
+interface Props {
+  cols?: number;
+  rows?: number;
+  cellSize?: number;
+  cells?: { row: number, col: number, color: string }[];
+  className?: string;
+}
+
+const { 
+  cols = 3, 
+  rows = 2, 
+  cellSize = 24, 
+  cells = [], 
+  className = '' 
+} = Astro.props;
+
+const gridArray = Array.from({ length: rows * cols }).map((_, i) => {
+  const row = Math.floor(i / cols);
+  const col = i % cols;
+  const cellData = cells.find(c => c.row === row && c.col === col);
+  return {
+    color: cellData ? cellData.color : 'bg-white'
+  };
+});
+---
+
+<div 
+  class={`grid border-l border-t border-black ${className}`} 
+  style={`grid-template-columns: repeat(${cols}, ${cellSize}px); grid-template-rows: repeat(${rows}, ${cellSize}px);`}
+  aria-hidden="true"
+>
+  {gridArray.map((cell) => (
+    <div class={`border-r border-b border-black ${cell.color}`}></div>
+  ))}
+</div>

@@ -1,0 +1,375 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { 
+  MessageSquare, 
+  Send, 
+  Volume2, 
+  Languages
+} from '@lucide/astro';
+import PrimerGrid from '../components/PrimerGrid.astro';
+---
+
+<Layout title="AI Assistant | ScholarSync AI" activePage="chat">
+  <div class="max-w-4xl mx-auto flex flex-col h-[80vh] border border-gray-200 bg-white rounded-3xl overflow-hidden shadow-sm relative">
+    
+    <!-- Top Bar -->
+    <div class="p-4 border-b border-gray-200 flex items-center justify-between bg-white animate-fade-in relative overflow-hidden">
+      <PrimerGrid 
+        cols={4} rows={2} cellSize={16} 
+        cells={[{ row: 0, col: 3, color: 'bg-[#F43F5E]' }, { row: 1, col: 2, color: 'bg-[#FFD13B]' }]} 
+        className="absolute left-1/2 -translate-x-1/2 top-0 opacity-20 hidden md:grid" 
+      />
+      <div class="flex items-center gap-3 relative z-10">
+        <div class="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center shadow-sm">
+          <MessageSquare class="w-5 h-5" aria-hidden="true" />
+        </div>
+        <div>
+          <h2 class="font-outfit font-black text-sm text-gray-900">AI Scholarship Guide</h2>
+          <span class="text-[9px] text-green-700 font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+            Online • Agent Mode Active
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick Actions (Voice & translation) -->
+      <div class="flex items-center gap-2">
+        <!-- Voice -->
+        <button id="chatVoiceBtn" type="button" class="p-2 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-200 text-gray-500 hover:text-black outline-none focus-visible:ring-2 focus-visible:ring-black transition-colors relative" title="Voice Input" aria-label="Voice input">
+          <Volume2 class="w-4 h-4" aria-hidden="true" />
+          <span id="voiceRipple" class="hidden absolute inset-0 rounded-xl bg-gray-200 animate-ping"></span>
+        </button>
+        
+        <!-- Language Translator -->
+        <div class="flex items-center gap-1 text-gray-500 hover:text-gray-900 transition-colors cursor-pointer text-xs p-2 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-200 relative">
+          <Languages class="w-4 h-4 text-gray-700" aria-hidden="true" />
+          <label for="chatLang" class="sr-only">Select Chat Language</label>
+          <select id="chatLang" name="chatLanguage" aria-label="Select Chat Language" class="bg-transparent border-none text-[10px] font-bold text-gray-600 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black rounded">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="flex-grow p-6 overflow-y-auto space-y-4 bg-gray-50/50" id="chatFeed">
+      <!-- Welcome message -->
+      <div class="flex gap-3 max-w-[85%] animate-fade-in">
+        <div class="w-8 h-8 rounded-xl bg-black flex items-center justify-center text-white text-xs font-bold shrink-0">
+          AI
+        </div>
+        <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm text-xs text-gray-700 leading-relaxed space-y-2">
+          <p id="welcomeTxt">
+            Hello! I am your AI Scholarship Assistant. I can help you search for schemes, list documentation checklists, verify dates, or explain criteria.
+          </p>
+          <p class="text-[10px] text-gray-500 font-bold tracking-wider uppercase">
+            Try clicking one of the quick questions below to start.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Question Chips -->
+    <div class="p-4 border-t border-gray-200 bg-white flex flex-wrap gap-2" id="quickChips">
+      <button type="button" onclick="sendPreset('List government scholarships for OBC students')" class="px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 hover:border-black hover:bg-white outline-none focus-visible:ring-2 focus-visible:ring-black text-[10px] text-gray-700 transition-colors font-bold shadow-sm">
+        📋 Government OBC Schemes
+      </button>
+      <button type="button" onclick="sendPreset('What documents are required for Post-Matric?')" class="px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 hover:border-black hover:bg-white outline-none focus-visible:ring-2 focus-visible:ring-black text-[10px] text-gray-700 transition-colors font-bold shadow-sm">
+        📂 Post-Matric Documents
+      </button>
+      <button type="button" onclick="sendPreset('Show key upcoming deadlines')" class="px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 hover:border-black hover:bg-white outline-none focus-visible:ring-2 focus-visible:ring-black text-[10px] text-gray-700 transition-colors font-bold shadow-sm">
+        📅 Close Deadlines
+      </button>
+    </div>
+
+    <!-- Input Bar -->
+    <form class="p-4 border-t border-gray-200 bg-gray-50 flex gap-2" id="chatForm">
+      <label for="chatInput" class="sr-only">Message text</label>
+      <input type="text" id="chatInput" name="message" placeholder="Type your query here…" required autocomplete="off" class="flex-grow px-4 py-3 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 outline-none focus-visible:ring-2 focus-visible:ring-black transition-colors shadow-sm" />
+      <button type="submit" aria-label="Send message" class="px-5 py-3 rounded-xl bg-black hover:bg-gray-800 text-white flex items-center justify-center shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-black transition-colors">
+        <Send class="w-4 h-4" aria-hidden="true" />
+      </button>
+    </form>
+
+  </div>
+
+  <script>
+    import { supabase, getSessionId } from '../utils/supabase';
+
+    const chatFeed = document.getElementById('chatFeed');
+    const chatForm = document.getElementById('chatForm') as HTMLFormElement;
+    const chatInput = document.getElementById('chatInput') as HTMLInputElement;
+    const chatVoiceBtn = document.getElementById('chatVoiceBtn');
+    const voiceRipple = document.getElementById('voiceRipple');
+    const chatLang = document.getElementById('chatLang') as HTMLSelectElement;
+
+    let chatHistory: any[] = [];
+    let studentProfile: any = {};
+
+    // Protect route
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        window.location.replace('/login');
+      } else {
+        loadProfile();
+      }
+    });
+
+    // Load Profile
+    async function loadProfile() {
+      const sessionId = await getSessionId();
+      if (sessionId) {
+        const { data } = await supabase.from('profiles').select('*').eq('user_id', sessionId).single();
+        if (data) {
+          studentProfile = {
+            name: data.name,
+            age: data.age,
+            gender: data.gender,
+            state: data.state,
+            category: data.category,
+            familyIncome: data.family_income,
+            educationLevel: data.education_level,
+            currentCourse: data.current_course,
+            percentageOrCgpa: data.percentage_or_cgpa,
+            disabilityStatus: data.disability_status,
+            minorityStatus: data.minority_status
+          };
+          localStorage.setItem('scholarship_profile', JSON.stringify(studentProfile));
+          return;
+        }
+      }
+      
+      const profileStr = localStorage.getItem('scholarship_profile');
+      if (profileStr) {
+        try { studentProfile = JSON.parse(profileStr); } catch(e) {}
+      }
+    }
+
+    // Translate welcome messages client-side for demo
+    const translations = {
+      en: {
+        welcome: "Hello! I am your AI Scholarship Assistant. I can help you search for schemes, list documentation checklists, verify dates, or explain criteria.",
+        placeholder: "Type your query here…"
+      },
+      hi: {
+        welcome: "नमस्ते! मैं आपका एआई छात्रवृत्ति सहायक हूँ। मैं आपको सरकारी योजनाओं को खोजने, दस्तावेज़ सूची देखने या पात्रता स्पष्ट करने में मदद कर सकता हूँ।",
+        placeholder: "अपनी पूछताछ यहाँ लिखें…"
+      },
+      es: {
+        welcome: "¡Hola! Soy tu asistente de IA para becas. Puedo ayudarte a buscar planes de estudio, verificar requisitos de documentos o explicar criterios.",
+        placeholder: "Escriba su consulta aquí…"
+      }
+    };
+
+    chatLang.addEventListener('change', () => {
+      const lang = chatLang.value;
+      document.getElementById('welcomeTxt').textContent = translations[lang].welcome;
+      chatInput.placeholder = translations[lang].placeholder;
+    });
+
+    // Form Submit
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const message = chatInput.value.trim();
+      if (!message) return;
+      
+      sendMessage(message);
+      chatInput.value = "";
+    });
+
+    // Preset Chip Click
+    window.sendPreset = function(text) {
+      sendMessage(text);
+    }
+
+    // Dynamic notification when agent extracts details
+    function appendProfileUpdateNotice(updates) {
+      const notice = document.createElement('div');
+      notice.className = "flex justify-center my-2 animate-fade-in";
+      
+      const labels = {
+        name: "Name",
+        age: "Age",
+        gender: "Gender",
+        state: "State",
+        category: "Category",
+        familyIncome: "Family Income",
+        educationLevel: "Education Level",
+        currentCourse: "Current Course",
+        percentageOrCgpa: "Score",
+        disabilityStatus: "Disability Status",
+        minorityStatus: "Minority Status"
+      };
+
+      const details = Object.entries(updates)
+        .map(([key, val]) => {
+          let displayVal = val;
+          if (typeof val === 'boolean') {
+            displayVal = val ? "Yes" : "No";
+          } else if (key === 'familyIncome') {
+            displayVal = "₹" + parseInt(val).toLocaleString('en-IN');
+          } else if (key === 'percentageOrCgpa') {
+            displayVal = val + "%";
+          }
+          return `<b class="text-gray-900">${labels[key] || key}</b>: ${displayVal}`;
+        })
+        .join(', ');
+
+      notice.innerHTML = `
+        <div class="px-4 py-2 rounded-xl bg-blue-50 border border-blue-100 text-[10px] text-blue-800 font-medium flex items-center gap-1.5 shadow-sm">
+          <span>⚙️ Agent updated your profile:</span>
+          <span>${details}</span>
+        </div>
+      `;
+      chatFeed.appendChild(notice);
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+    }
+
+    async function sendMessage(text) {
+      // Append User message
+      appendMessage("User", text);
+      
+      chatHistory.push({ role: "user", content: text });
+
+      // Append typing indicator
+      const loader = appendLoading();
+
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            messages: chatHistory,
+            profile: studentProfile
+          })
+        });
+        
+        const data = await res.json();
+        loader.remove();
+
+        if (data.response) {
+          appendMessage("AI", data.response);
+          chatHistory.push({ role: "assistant", content: data.response });
+
+          // Agent updates student profile dynamically from conversation
+          if (data.updatedProfile && Object.keys(data.updatedProfile).length > 0) {
+            const updated = { ...studentProfile, ...data.updatedProfile };
+            localStorage.setItem('scholarship_profile', JSON.stringify(updated));
+            studentProfile = updated;
+            appendProfileUpdateNotice(data.updatedProfile);
+            
+            // Sync update to Supabase
+            getSessionId().then(sessionId => {
+              if (sessionId) {
+                supabase.from('profiles').upsert({
+                  user_id: sessionId,
+                  name: updated.name,
+                  age: updated.age,
+                  gender: updated.gender,
+                  state: updated.state,
+                  category: updated.category,
+                  family_income: updated.familyIncome,
+                  education_level: updated.educationLevel,
+                  current_course: updated.currentCourse,
+                  percentage_or_cgpa: updated.percentageOrCgpa,
+                  disability_status: updated.disabilityStatus,
+                  minority_status: updated.minorityStatus
+                }).then(({error}) => {
+                  if (error) console.error("Agent Supabase sync error:", error);
+                });
+              }
+            });
+          }
+        } else {
+          appendMessage("AI", "Sorry, I encountered an issue. Please try again.");
+        }
+      } catch (err) {
+        loader.remove();
+        appendMessage("AI", "Unable to connect to AI server. Please verify network status.");
+      }
+    }
+
+    function appendMessage(sender, text) {
+      const bubble = document.createElement('div');
+      const isUser = sender === "User";
+      
+      bubble.className = isUser 
+        ? "flex gap-3 max-w-[85%] ml-auto justify-end animate-fade-in"
+        : "flex gap-3 max-w-[85%] animate-fade-in";
+
+      const avatar = isUser
+        ? `<div class="w-8 h-8 rounded-xl bg-gray-200 border border-gray-300 flex items-center justify-center text-gray-700 text-xs font-bold shrink-0 order-2">U</div>`
+        : `<div class="w-8 h-8 rounded-xl bg-black flex items-center justify-center text-white text-xs font-bold shrink-0">AI</div>`;
+
+      const contentClass = isUser
+        ? "p-4 rounded-2xl bg-gray-900 text-white shadow-sm text-xs leading-relaxed"
+        : "p-4 rounded-2xl bg-white border border-gray-200 shadow-sm text-xs text-gray-700 leading-relaxed markdown-body";
+
+      // Simple Markdown converter replacement for bullet-points/bold text
+      let formattedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<b class="font-bold text-black">$1</b>')
+        .replace(/\n/g, '<br/>')
+        .replace(/^\*\s(.*)$/gm, '• $1');
+
+      bubble.innerHTML = `
+        ${avatar}
+        <div class="${contentClass} ${isUser ? 'order-1' : ''}">
+          ${formattedText}
+        </div>
+      `;
+
+      chatFeed.appendChild(bubble);
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+    }
+
+    function appendLoading() {
+      const bubble = document.createElement('div');
+      bubble.className = "flex gap-3 max-w-[85%]";
+      bubble.innerHTML = `
+        <div class="w-8 h-8 rounded-xl bg-black flex items-center justify-center text-white text-xs font-bold shrink-0">AI</div>
+        <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm text-xs text-gray-500 leading-relaxed flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 0.2s"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 0.4s"></span>
+        </div>
+      `;
+      chatFeed.appendChild(bubble);
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+      return bubble;
+    }
+
+    // Voice recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'en-IN';
+
+      chatVoiceBtn.addEventListener('click', () => {
+        voiceRipple.classList.remove('hidden');
+        recognition.start();
+      });
+
+      recognition.onresult = (e) => {
+        voiceRipple.classList.add('hidden');
+        const transcript = e.results[0][0].transcript;
+        chatInput.value = transcript;
+      };
+
+      recognition.onerror = () => voiceRipple.classList.add('hidden');
+      recognition.onend = () => voiceRipple.classList.add('hidden');
+    } else {
+      chatVoiceBtn.addEventListener('click', () => {
+        alert("Speech recognition is not supported in this browser. Try Chrome.");
+      });
+    }
+  </script>
+</Layout>
